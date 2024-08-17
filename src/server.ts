@@ -4,8 +4,13 @@ import bodyParser from "body-parser";
 
 // user defined
 import serverRoute from "./app/routes/server.routes";
-import { initialPage, serverPort } from "./app/controllers/server.controller";
+import {
+  initialPage,
+  missingRoutes,
+  serverPort,
+} from "./app/controllers/server.controller";
 import { allowedCorsOrigins } from "./app/utils/serverUtils";
+import { requestsOfTypeJSON } from "./app/middlewares/server.middleware";
 
 const app = express();
 
@@ -16,16 +21,17 @@ dotenv.config();
 app.get("/", initialPage);
 app.use("/", serverRoute);
 // HANDLE MISSING ROUTES
-app.get("*")
-app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
-app.use(bodyParser.json({ limit: '50mb' }));
+app.get("*", missingRoutes);
+// TODO implement on only body post endpoints
+// to allow only json
+app.use("*", requestsOfTypeJSON);
+app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
+app.use(bodyParser.json({ limit: "50mb" }));
 app.listen(process.env.PORT, serverPort);
-
 
 // if (process.env.CORS_ALLOW_LOCALHOST === 'true') {
 //   allowedCorsOrigins.push(/localhost/);
 // }
-
 
 // start services
 async function startServices(): Promise<void> {
@@ -36,5 +42,6 @@ async function startServices(): Promise<void> {
   console.log(name);
 }
 
-
 startServices();
+
+export default app;
