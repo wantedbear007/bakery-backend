@@ -1,4 +1,4 @@
-import express, { Request, Response, Router } from "express";
+import express from "express";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
 
@@ -9,39 +9,32 @@ import {
   missingRoutes,
   serverPort,
 } from "./app/controllers/server.controller";
-import { allowedCorsOrigins } from "./app/utils/serverUtils";
+import { allowedCorsOrigins, useRateLimiter } from "./app/utils/serverUtils";
 import { requestsOfTypeJSON } from "./app/middlewares/server.middleware";
 
-const app = express();
-
 dotenv.config();
-
-// start app
+const app = express();
 
 app.get("/", initialPage);
 app.use("/", serverRoute);
+
 // HANDLE MISSING ROUTES
 app.get("*", missingRoutes);
+
+// Essentials
+// rate limiter
+app.use(useRateLimiter);
 // TODO implement on only body post endpoints
 // to allow only json
 app.use("*", requestsOfTypeJSON);
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 app.use(bodyParser.json({ limit: "50mb" }));
+
+// start app
 app.listen(process.env.PORT, serverPort);
 
 // if (process.env.CORS_ALLOW_LOCALHOST === 'true') {
 //   allowedCorsOrigins.push(/localhost/);
 // }
-
-// start services
-async function startServices(): Promise<void> {
-  // database connectivity
-  // app connectivity
-
-  const name = process.env.SERVER;
-  console.log(name);
-}
-
-startServices();
 
 export default app;

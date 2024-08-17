@@ -3,8 +3,12 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsc-watch --noClear -p ./tsconfig.json --onSuccess \"node ./dist/server.js\""
+    "start": "node dist/server",
+    "build": "webpack",
+    "delCache": "npm cache clean --force",
+    "dev": "tsc-watch --noClear -p ./tsconfig.json --onSuccess \"node ./dist/server.js\"",
+    "migrate": "npx prisma migrate dev --name init",
+    "generate": "npx prisma generate --no-engine"
   },
   "keywords": [],
   "author": "",
@@ -13,13 +17,21 @@
   "devDependencies": {
     "@types/express": "^4.17.21",
     "@types/node": "^22.4.0",
+    "prisma": "^5.18.0",
+    "ts-loader": "^9.5.1",
+    "ts-node": "^10.9.2",
     "tsc-watch": "^6.2.0",
-    "typescript": "^5.5.4"
+    "typescript": "^5.5.4",
+    "webpack": "^5.93.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-node-externals": "^3.0.0"
   },
   "dependencies": {
+    "@prisma/client": "^5.18.0",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.4.0"
   }
 }
